@@ -34,7 +34,7 @@ def pull_s3_sublist(data_folder, creds_path=None, keep_prefix=True):
     import os
     from indi_aws import fetch_creds
 
-    if creds_path:
+    if creds_path and creds_path != 'anon':
         creds_path = os.path.abspath(creds_path)
 
     s3_path = data_folder.split("s3://")[1]
