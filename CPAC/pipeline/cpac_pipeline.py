@@ -446,7 +446,8 @@ def prep_workflow(sub_dict, c, strategies, run, pipeline_timing_info=None,
     # Extract credentials path if it exists
     try:
         creds_path = sub_dict['creds_path']
-        if creds_path and 'none' not in creds_path.lower():
+        input_creds_path = None
+        if creds_path and creds_path.lower() not in ['none', 'anon']:
             if os.path.exists(creds_path):
                 input_creds_path = os.path.abspath(creds_path)
             else:
@@ -454,8 +455,8 @@ def prep_workflow(sub_dict, c, strategies, run, pipeline_timing_info=None,
                           'found. Check this path and try again.' % (
                           creds_path, subject_id)
                 raise Exception(err_msg)
-        else:
-            input_creds_path = None
+        elif creds_path.lower() == 'anon':
+            input_creds_path = 'anon'
     except KeyError:
         input_creds_path = None
 
@@ -5028,7 +5029,8 @@ def prep_workflow(sub_dict, c, strategies, run, pipeline_timing_info=None,
             try:
                 # Get path to creds file
                 creds_path = str(c.awsOutputBucketCredentials)
-                creds_path = os.path.abspath(creds_path)
+                if creds_path != 'anon':
+                    creds_path = os.path.abspath(creds_path)
                 # Test for s3 write access
                 s3_write_access = \
                     aws_utils.test_bucket_access(creds_path,
