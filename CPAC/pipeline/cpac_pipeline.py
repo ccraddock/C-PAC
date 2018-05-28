@@ -5029,8 +5029,10 @@ def prep_workflow(sub_dict, c, strategies, run, pipeline_timing_info=None,
             try:
                 # Get path to creds file
                 creds_path = str(c.awsOutputBucketCredentials)
-                if creds_path != 'anon':
+                if creds_path not in ['anon', 'None']:
                     creds_path = os.path.abspath(creds_path)
+                if creds_path == 'None':
+                    creds_path = None
                 # Test for s3 write access
                 s3_write_access = \
                     aws_utils.test_bucket_access(creds_path,
